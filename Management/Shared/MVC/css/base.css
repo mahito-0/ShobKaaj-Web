@@ -17,42 +17,35 @@
    1. Variables & Settings
    ========================= */
 :root {
-  /* Core Colors & Neutrals - Light Mode Mint Theme */
+  /* Core Colors & Neutrals - Light Mode */
   --bg: #f8fafc;
-  /* Slate-50 - Clean Light Background */
   --surface: #ffffff;
-  /* White - Standard Card Background */
   --surface-elevated: #ffffff;
 
   /* Text Colors */
-  --text: #0f172a;
-  /* Slate-900 - Deep Black/Blue for primary text */
-  --text-secondary: #475569;
-  /* Slate-600 */
+  --text: #1e293b;
+  --text-secondary: #334155;
   --text-muted: #64748b;
-  /* Slate-500 */
   --muted: var(--text-muted);
 
+  /* Borders & Backgrounds */
   --line: #e2e8f0;
-  /* Slate-200 - Light Borders */
   --hover: #f1f5f9;
-  /* Slate-100 */
   --hover-secondary: #e2e8f0;
 
-  /* Brand / Primary - Mint Green */
-  --primary: #10b981;
-  /* Emerald-500 */
-  --primary-hover: #059669;
-  /* Emerald-600 */
-  --primary-active: #047857;
-  /* Emerald-700 */
-  --primary-subtle: #d1fae5;
-  /* Emerald-100 - Light Mint Background */
-  --primary-muted: #6ee7b7;
-  /* Emerald-300 */
+  /* Brand / Primary */
+  --primary: #15803d;
+  --primary-hover: #166534;
+  --primary-active: #14532d;
+  --primary-subtle: #dcfce7;
+  --primary-muted: #86efac;
+
+  /* Brand / Secondary & CTA */
+  --secondary: #2563eb;
+  --cta: #f97316;
 
   /* Semantic Colors */
-  --error: #ef4444;
+  --error: #dc2626;
   --error-subtle: #fee2e2;
   --error-muted: #fca5a5;
 
@@ -60,9 +53,9 @@
   --warning-subtle: #fef3c7;
   --warning-muted: #fcd34d;
 
-  --success: #10b981;
-  --success-subtle: #d1fae5;
-  --success-muted: #6ee7b7;
+  --success: #22c55e;
+  --success-subtle: #dcfce7;
+  --success-muted: #86efac;
 
   --info: #3b82f6;
   --info-subtle: #dbeafe;

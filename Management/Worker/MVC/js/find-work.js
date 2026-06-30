@@ -23,6 +23,39 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    const toggleGridBtn = document.getElementById('toggleGridBtn');
+    const toggleMapBtn = document.getElementById('toggleMapBtn');
+    const mapContainer = document.getElementById('jobMapContainer');
+    
+    let mapInstance = null;
+
+    toggleGridBtn.addEventListener('click', () => {
+        jobsContainer.style.display = 'grid'; // Base CSS handles grid template
+        mapContainer.style.display = 'none';
+        toggleGridBtn.classList.replace('outline', 'primary');
+        toggleMapBtn.classList.replace('primary', 'outline');
+    });
+
+    toggleMapBtn.addEventListener('click', () => {
+        jobsContainer.style.display = 'none';
+        mapContainer.style.display = 'block';
+        toggleMapBtn.classList.replace('outline', 'primary');
+        toggleGridBtn.classList.replace('primary', 'outline');
+        
+        // Initialize map if not already done
+        if (!mapInstance) {
+            loadLeafletResources(() => {
+                mapInstance = initMap('jobMapContainer');
+                renderJobMarkers(window.currentJobs || []);
+            });
+        } else {
+            // Force Leaflet to recalculate map size since it was hidden
+            setTimeout(() => {
+                mapInstance.invalidateSize();
+            }, 100);
+        }
+    });
+
     async function fetchJobs() {
         const keyword = document.getElementById('searchInput').value;
         const location = document.getElementById('locationInput').value;
@@ -35,6 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (keyword) params.append('search', keyword);
         if (location) params.append('location', location);
         if (category && category !== 'all') params.append('category', category);
+        params.append('_t', Date.now());
 
         // Show Loading State
         jobsContainer.innerHTML = `
@@ -54,10 +88,16 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log('Job API Result:', result); // Debug log
 
             if (result.status === 'success') {
+                window.currentJobs = result.jobs || [];
                 if (result.jobs && result.jobs.length > 0) {
                     renderJobs(result.jobs);
                 } else {
                     renderEmpty();
+                }
+                
+                // Update map if it exists
+                if (typeof mapInstance !== 'undefined' && mapInstance) {
+                    renderJobMarkers(window.currentJobs);
                 }
             } else {
                 // API returned an error status
@@ -137,5 +177,52 @@ document.addEventListener('DOMContentLoaded', () => {
                 <p>Try adjusting your search terms or filters.</p>
             </div>
         `;
+    }
+
+    function renderJobMarkers(jobs) {
+        if (!mapInstance) return;
+        
+        // Clear existing markers
+        if (window.mapLayerGroup) {
+            mapInstance.removeLayer(window.mapLayerGroup);
+        }
+        
+        window.mapLayerGroup = L.layerGroup().addTo(mapInstance);
+        
+        let hasLocation = false;
+        const bounds = L.latLngBounds();
+
+        jobs.forEach(job => {
+            if (job.latitude && job.longitude) {
+                hasLocation = true;
+                const lat = parseFloat(job.latitude);
+                const lng = parseFloat(job.longitude);
+                
+                const popupContent = `
+                    <div style="text-align: center; min-width: 150px;">
+                        <h4 style="margin: 0; color: #111; font-size: 0.9rem;">${job.title}</h4>
+                        <p style="margin: 5px 0; font-size: 0.8rem; color: #666; font-weight: bold;">৳${parseFloat(job.budget).toLocaleString()}</p>
+                        <a href="/project-simulator-ShobKaaj/Management/Worker/MVC/html/job-details.php?id=${job.id}" style="display: inline-block; background: #6366f1; color: #fff; padding: 5px 10px; border-radius: 4px; text-decoration: none; font-size: 0.8rem;">View Details</a>
+                    </div>
+                `;
+                
+                // Customize marker icon based on type
+                const jobIcon = L.divIcon({
+                    html: '<i class="fas fa-briefcase" style="color: #6366f1; font-size: 24px; filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.3));"></i>',
+                    className: 'custom-div-icon',
+                    iconSize: [24, 24],
+                    iconAnchor: [12, 24],
+                    popupAnchor: [0, -24]
+                });
+                
+                const marker = L.marker([lat, lng], {icon: jobIcon}).bindPopup(popupContent);
+                window.mapLayerGroup.addLayer(marker);
+                bounds.extend([lat, lng]);
+            }
+        });
+
+        if (hasLocation) {
+            mapInstance.fitBounds(bounds, { padding: [50, 50], maxZoom: 14 });
+        }
     }
 });

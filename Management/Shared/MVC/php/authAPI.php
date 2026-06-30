@@ -224,17 +224,19 @@ class AuthAPI
         $lname = $this->getInput('last_name');
         $phone = $this->getInput('phone');
         $skills = $this->getInput('skills');
+        $latitude = $this->getInput('latitude') !== '' ? $this->getInput('latitude') : null;
+        $longitude = $this->getInput('longitude') !== '' ? $this->getInput('longitude') : null;
 
         if (!$id || !$fname || !$lname) {
             $this->sendResponse('error', 'Missing required fields');
         }
 
-        $sql = "UPDATE users SET first_name = ?, last_name = ?, phone = ?, skills = ? WHERE id = ?";
+        $sql = "UPDATE users SET first_name = ?, last_name = ?, phone = ?, skills = ?, latitude = ?, longitude = ? WHERE id = ?";
         $stmt = $this->db->prepare($sql);
 
         if ($stmt) {
 
-            $stmt->bind_param("ssssi", $fname, $lname, $phone, $skills, $id);
+            $stmt->bind_param("ssssddi", $fname, $lname, $phone, $skills, $latitude, $longitude, $id);
             $stmt->execute();
             $stmt->close();
 
@@ -404,7 +406,7 @@ class AuthAPI
         $search = $this->getInput('search');
 
         // Base Query: Get only workers
-        $sql = "SELECT users.id, users.first_name, users.last_name, users.avatar, users.email, users.skills,
+        $sql = "SELECT users.id, users.first_name, users.last_name, users.avatar, users.email, users.skills, users.latitude, users.longitude,
                         (SELECT COUNT(*) FROM applications JOIN jobs ON applications.job_id = jobs.id WHERE applications.worker_id = users.id AND jobs.status = 'completed') as completed_jobs,
                         (SELECT SUM(bid_amount) FROM applications JOIN jobs ON applications.job_id = jobs.id WHERE applications.worker_id = users.id AND jobs.status = 'completed') as total_earnings,
                         (SELECT AVG(rating) FROM reviews WHERE reviewee_id = users.id) as rating,
@@ -433,7 +435,10 @@ class AuthAPI
         if ($stmt->execute()) {
             $result = $stmt->get_result();
             $workers = $result->fetch_all(MYSQLI_ASSOC);
-            $this->sendResponse('success', 'Workers fetched', ['workers' => $workers]);
+            $response = ['status' => 'success', 'message' => 'Workers fetched', 'workers' => $workers];
+        file_put_contents(__DIR__ . '/get_workers_log.txt', date('Y-m-d H:i:s') . " - SEARCH: " . ($search ? $search : 'NONE') . " - RESPONSE: " . json_encode($response) . "\n", FILE_APPEND);
+        
+        $this->sendResponse('success', 'Workers fetched', ['workers' => $workers]);
         } else {
             $this->sendResponse('error', 'Query failed');
         }

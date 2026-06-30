@@ -25,6 +25,27 @@ document.addEventListener('DOMContentLoaded', () => {
         await loadStats();
         await loadUsers();
         await loadJobs();
+        initAdminMap();
+    }
+
+    let adminMap = null;
+    let usersLayer = null;
+    let jobsLayer = null;
+
+    function initAdminMap() {
+        if (!adminMap && document.getElementById('adminMapContainer')) {
+            loadLeafletResources(() => {
+                adminMap = initMap('adminMapContainer');
+                usersLayer = L.layerGroup().addTo(adminMap);
+                jobsLayer = L.layerGroup().addTo(adminMap);
+                
+                if (window.loadedUsers) renderMapUsers(window.loadedUsers);
+                if (window.loadedJobs) renderMapJobs(window.loadedJobs);
+            });
+        } else if (adminMap) {
+            if (window.loadedUsers) renderMapUsers(window.loadedUsers);
+            if (window.loadedJobs) renderMapJobs(window.loadedJobs);
+        }
     }
 
 
@@ -50,6 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const res = await fetch('../php/adminAPI.php?action=get_users');
             const data = await res.json();
             if (data.status === 'success') {
+                window.loadedUsers = data.users;
                 renderTable(data.users);
             }
         } catch (e) {
@@ -64,6 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const res = await fetch('../php/adminAPI.php?action=get_jobs');
             const data = await res.json();
             if (data.status === 'success') {
+                window.loadedJobs = data.jobs;
                 renderJobsTable(data.jobs);
             }
         } catch (e) {
@@ -208,6 +231,50 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    function renderMapUsers(users) {
+        if (!usersLayer) return;
+        usersLayer.clearLayers();
+        
+        users.forEach(u => {
+            if (u.latitude && u.longitude) {
+                const lat = parseFloat(u.latitude);
+                const lng = parseFloat(u.longitude);
+                
+                const userIcon = L.divIcon({
+                    html: '<i class="fas fa-user" style="color: #22c55e; font-size: 16px; filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.3));"></i>',
+                    className: 'custom-div-icon',
+                    iconSize: [16, 16],
+                    iconAnchor: [8, 16],
+                    popupAnchor: [0, -16]
+                });
+                
+                const marker = L.marker([lat, lng], {icon: userIcon}).bindPopup(`<b>${u.first_name} ${u.last_name}</b><br>${u.role}`);
+                usersLayer.addLayer(marker);
+            }
+        });
+    }
 
+    function renderMapJobs(jobs) {
+        if (!jobsLayer) return;
+        jobsLayer.clearLayers();
+        
+        jobs.forEach(j => {
+            if (j.latitude && j.longitude) {
+                const lat = parseFloat(j.latitude);
+                const lng = parseFloat(j.longitude);
+                
+                const jobIcon = L.divIcon({
+                    html: '<i class="fas fa-briefcase" style="color: #3b82f6; font-size: 16px; filter: drop-shadow(0px 2px 2px rgba(0,0,0,0.3));"></i>',
+                    className: 'custom-div-icon',
+                    iconSize: [16, 16],
+                    iconAnchor: [8, 16],
+                    popupAnchor: [0, -16]
+                });
+                
+                const marker = L.marker([lat, lng], {icon: jobIcon}).bindPopup(`<b>${j.title}</b><br>$${j.budget}`);
+                jobsLayer.addLayer(marker);
+            }
+        });
+    }
 
 });

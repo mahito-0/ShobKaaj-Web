@@ -59,9 +59,13 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
             </div>
         </div>
 
+        <!-- Platform Activity Map -->
+        <div style="margin-top: 30px;">
+            <h2 style="margin-bottom: 20px;">Platform Activity</h2>
+            <div id="adminMapContainer" style="height: 500px; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.1);"></div>
+        </div>
 
-
-        <div style="display: grid; gap: 30px;">
+        <div style="display: grid; gap: 30px; margin-top: 30px;">
             <!-- Users Table -->
             <div>
                 <h2 style="margin-bottom: 20px;">User Management</h2>
@@ -116,6 +120,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
 
     <!-- Scripts -->
     <script src="../../../Shared/MVC/js/utils.js"></script>
+    <script src="../../../Shared/MVC/js/map-utils.js"></script>
     <script src="../../../Shared/MVC/js/navbar.js"></script>
     <script src="../js/admin.js"></script>
 </body>

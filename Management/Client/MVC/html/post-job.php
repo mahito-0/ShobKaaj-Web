@@ -48,14 +48,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $description = trim($_POST["description"]);
     }
 
+    $latitude = isset($_POST["latitude"]) ? floatval($_POST["latitude"]) : null;
+    $longitude = isset($_POST["longitude"]) ? floatval($_POST["longitude"]) : null;
+
     // 3. Insert if no errors
     if (empty($title_err) && empty($category_err) && empty($budget_err) && empty($desc_err)) {
 
         // Prepare SQL - using defaults for location/deadline as they aren't in form yet
-        $sql = "INSERT INTO jobs (client_id, title, description, budget, category, status, created_at) VALUES (?, ?, ?, ?, ?, 'open', NOW())";
+        $sql = "INSERT INTO jobs (client_id, title, description, budget, category, status, latitude, longitude, created_at) VALUES (?, ?, ?, ?, ?, 'open', ?, ?, NOW())";
 
         if ($stmt = $conn->prepare($sql)) {
-            $stmt->bind_param("issss", $client_id, $title, $description, $budget, $category);
+            $stmt->bind_param("issssdd", $client_id, $title, $description, $budget, $category, $latitude, $longitude);
 
             if ($stmt->execute()) {
                 // Success - Redirect to Dashboard
@@ -162,6 +165,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <span style="color: var(--error); font-size: 0.85rem;"><?php echo $desc_err; ?></span>
                     </div>
 
+                    <div class="form-group">
+                        <label>Job Location</label>
+                        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">Drop a pin where the job is located.</p>
+                        <div id="job-location-map" style="height: 300px; border-radius: var(--radius); border: 1px solid rgba(255, 255, 255, 0.1); margin-bottom: 1rem;"></div>
+                        <input type="hidden" name="latitude" id="input-latitude" value="">
+                        <input type="hidden" name="longitude" id="input-longitude" value="">
+                    </div>
+
                     <div class="form-actions">
                         <a href="client-dashboard.php" class="btn outline">Cancel</a>
                         <button type="submit" class="btn primary btn-submit">
@@ -176,6 +187,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <!-- Scripts -->
     <script src="/project-simulator-ShobKaaj/Management/Shared/MVC/js/utils.js"></script>
     <script src="/project-simulator-ShobKaaj/Management/Shared/MVC/js/navbar.js"></script>
+    <script src="/project-simulator-ShobKaaj/Management/Shared/MVC/js/map-utils.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            loadLeafletResources(() => {
+                const map = initMap('job-location-map');
+                
+                // Get user's current location to center map, or default to Dhaka
+                getUserCurrentLocation((lat, lng) => {
+                    map.setView([lat, lng], 13);
+                    addLocationPickerMarker(map, (lat, lng) => {
+                        document.getElementById('input-latitude').value = lat;
+                        document.getElementById('input-longitude').value = lng;
+                    }, lat, lng);
+                }, () => {
+                    addLocationPickerMarker(map, (lat, lng) => {
+                        document.getElementById('input-latitude').value = lat;
+                        document.getElementById('input-longitude').value = lng;
+                    });
+                });
+            });
+        });
+    </script>
 </body>
 
 </html>

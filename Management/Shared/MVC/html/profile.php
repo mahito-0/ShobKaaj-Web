@@ -56,6 +56,13 @@
                         <label>Skills (Comma separated, e.g. PHP, React)</label>
                         <input type="text" name="skills" class="input" placeholder="e.g. Graphic Design, Web Development">
                     </div>
+                    <div class="form-group full-width">
+                        <label>Base Location</label>
+                        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">Drop a pin to set your base location. This helps connect local workers and clients.</p>
+                        <div id="profile-location-map" style="height: 300px; border-radius: var(--radius); border: 1px solid rgba(255, 255, 255, 0.1); margin-bottom: 1rem;"></div>
+                        <input type="hidden" name="latitude" id="input-latitude">
+                        <input type="hidden" name="longitude" id="input-longitude">
+                    </div>
                 </div>
                 <div class="form-actions">
                     <button type="submit" class="btn primary-action">Save Changes</button>
@@ -88,6 +95,7 @@
     </main>
 
     <script src="../js/utils.js"></script>
+    <script src="../js/map-utils.js"></script>
     <script src="../js/profile.js"></script>
 </body>
 

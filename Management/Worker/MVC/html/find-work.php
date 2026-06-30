@@ -65,6 +65,11 @@
                     </button>
                 </form>
             </div>
+            
+            <div class="view-toggles" style="margin-bottom: 2rem; display: flex; justify-content: center; gap: 1rem;">
+                <button class="btn primary" id="toggleGridBtn"><i class="fas fa-list"></i> List View</button>
+                <button class="btn outline" id="toggleMapBtn"><i class="fas fa-map-marked-alt"></i> Map View</button>
+            </div>
 
             <!-- Job Results -->
             <div id="jobsContainer" class="job-grid">
@@ -75,13 +80,18 @@
                 </div>
             </div>
 
+            <!-- Map View Container -->
+            <div id="jobMapContainer" style="display: none; height: 600px; border-radius: var(--radius); border: 1px solid rgba(255, 255, 255, 0.1); margin-bottom: 2rem;">
+            </div>
+
         </div>
     </div>
 
     <!-- Scripts -->
-    <script src="/project-simulator-ShobKaaj/Management/Shared/MVC/js/utils.js"></script>
+    <script src="/project-simulator-ShobKaaj/Management/Shared/MVC/js/utils.js?v=<?php echo time(); ?>"></script>
+    <script src="/project-simulator-ShobKaaj/Management/Shared/MVC/js/map-utils.js?v=<?php echo time(); ?>"></script>
     <script src="/project-simulator-ShobKaaj/Management/Shared/MVC/js/navbar.js"></script>
-    <script src="../js/find-work.js"></script>
+    <script src="../js/find-work.js?v=<?php echo time(); ?>"></script>
 </body>
 
 </html>

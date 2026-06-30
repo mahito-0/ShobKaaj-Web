@@ -91,7 +91,7 @@ class AdminAPI
 
     function getUsers()
     {
-        $sql = "SELECT id, first_name, last_name, email, role, is_verified, status FROM users WHERE role != 'admin' ORDER BY id DESC";
+        $sql = "SELECT id, first_name, last_name, email, role, is_verified, status, latitude, longitude FROM users WHERE role != 'admin' ORDER BY id DESC";
         $result = $this->db->query($sql);
         $users = $result->fetch_all(MYSQLI_ASSOC);
         $this->sendResponse('success', 'Users fetched', ['users' => $users]);
@@ -100,11 +100,11 @@ class AdminAPI
     function getJobs()
     {
         // Join with users to get client name
-        $sql = "SELECT j.id, j.title, j.budget, j.status, j.created_at, 
+        $sql = "SELECT j.id, j.title, j.budget, j.status, j.created_at, j.latitude, j.longitude,
                        u.first_name, u.last_name 
-                FROM jobs j 
-                JOIN users u ON j.client_id = u.id 
-                ORDER BY j.created_at DESC";
+        FROM jobs j 
+        JOIN users u ON j.client_id = u.id 
+        ORDER BY j.created_at DESC";
 
         $result = $this->db->query($sql);
         $jobs = $result->fetch_all(MYSQLI_ASSOC);

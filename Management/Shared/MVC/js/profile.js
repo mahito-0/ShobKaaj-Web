@@ -21,6 +21,8 @@ document.addEventListener('DOMContentLoaded', () => {
         profileForm.elements.email.value = user.email || '';
         profileForm.elements.phone.value = user.phone || '';
         if (profileForm.elements.skills) profileForm.elements.skills.value = user.skills || '';
+        if (document.getElementById('input-latitude')) document.getElementById('input-latitude').value = user.latitude || '';
+        if (document.getElementById('input-longitude')) document.getElementById('input-longitude').value = user.longitude || '';
     }
 
     // Toggle Skills Field Visibility
@@ -32,6 +34,38 @@ document.addEventListener('DOMContentLoaded', () => {
             skillsContainer.style.display = 'none';
         }
     }
+
+    // Initialize Map
+    loadLeafletResources(() => {
+        const map = initMap('profile-location-map');
+        const latInput = document.getElementById('input-latitude');
+        const lngInput = document.getElementById('input-longitude');
+
+        // Check if user already has a saved location
+        if (user.latitude && user.longitude) {
+            const savedLat = parseFloat(user.latitude);
+            const savedLng = parseFloat(user.longitude);
+            addLocationPickerMarker(map, (lat, lng) => {
+                latInput.value = lat;
+                lngInput.value = lng;
+            }, savedLat, savedLng);
+        } else {
+            // Default to getting their current location
+            getUserCurrentLocation((lat, lng) => {
+                map.setView([lat, lng], 13);
+                addLocationPickerMarker(map, (newLat, newLng) => {
+                    latInput.value = newLat;
+                    lngInput.value = newLng;
+                }, lat, lng);
+            }, () => {
+                // Fallback to Dhaka if denied
+                addLocationPickerMarker(map, (lat, lng) => {
+                    latInput.value = lat;
+                    lngInput.value = lng;
+                });
+            });
+        }
+    });
 
     // Handle Profile Update
     profileForm.addEventListener('submit', async (e) => {

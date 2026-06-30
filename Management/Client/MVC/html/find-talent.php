@@ -25,6 +25,11 @@
                 <input type="text" id="searchInput" placeholder="Search by name or skill...">
                 <button class="btn primary" id="searchBtn">Search</button>
             </div>
+            
+            <div class="view-toggles" style="margin-top: 1rem; display: flex; justify-content: center; gap: 1rem;">
+                <button class="btn primary" id="toggleGridBtn"><i class="fas fa-th-large"></i> Grid View</button>
+                <button class="btn outline" id="toggleMapBtn"><i class="fas fa-map-marked-alt"></i> Map View</button>
+            </div>
         </section>
 
         <section class="talent-grid" id="talentGrid">
@@ -33,9 +38,15 @@
                 <i class="fas fa-spinner fa-spin"></i> Loading talent...
             </div>
         </section>
+
+        <section id="talentMapContainer" style="display: none; height: 600px; border-radius: var(--radius); border: 1px solid rgba(255, 255, 255, 0.1); margin-top: 2rem;">
+            <!-- Map will be rendered here -->
+        </section>
     </main>
 
-    <script src="../js/find-talent.js"></script>
+    <script src="/project-simulator-ShobKaaj/Management/Shared/MVC/js/utils.js?v=<?php echo time(); ?>"></script>
+    <script src="/project-simulator-ShobKaaj/Management/Shared/MVC/js/map-utils.js?v=<?php echo time(); ?>"></script>
+    <script src="../js/find-talent.js?v=<?php echo time(); ?>"></script>
 </body>
 
 </html>

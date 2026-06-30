@@ -184,3 +184,64 @@
     width: 100%;
     margin-top: auto;
 }
+
+.map-container {
+    height: 600px; 
+    border-radius: var(--radius); 
+    border: 1px solid var(--line); 
+    margin-top: var(--space-8);
+    width: 100%;
+}
+
+
+/* =========================
+   Mobile Responsive
+   ========================= */
+@media (max-width: 768px) {
+    .search-header {
+        padding: var(--space-6) var(--space-4);
+        margin-bottom: var(--space-6);
+        border-radius: var(--radius-lg);
+    }
+
+    .search-header h1 {
+        font-size: var(--fs-2xl);
+    }
+
+    .talent-grid {
+        grid-template-columns: 1fr;
+        gap: var(--space-4);
+    }
+
+    .search-bar {
+        padding: var(--space-1);
+    }
+
+    .search-bar input {
+        padding: var(--space-2) var(--space-2) var(--space-2) var(--space-10);
+        font-size: var(--fs-base);
+    }
+
+    .search-icon {
+        left: var(--space-4);
+    }
+    
+    .map-container {
+        height: 400px;
+    }
+}
+
+@media (max-width: 480px) {
+    .talent-card {
+        padding: var(--space-6);
+    }
+
+    .talent-avatar {
+        width: 80px;
+        height: 80px;
+    }
+
+    .talent-name {
+        font-size: var(--fs-lg);
+    }
+}

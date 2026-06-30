@@ -81,7 +81,7 @@
             </div>
 
             <!-- Map View Container -->
-            <div id="jobMapContainer" style="display: none; height: 600px; border-radius: var(--radius); border: 1px solid rgba(255, 255, 255, 0.1); margin-bottom: 2rem;">
+            <div id="jobMapContainer" class="map-container" style="display: none;">
             </div>
 
         </div>

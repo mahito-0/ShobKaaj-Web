@@ -38,7 +38,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
                     <button id="filterBtn" class="btn primary sm">Filter</button>
                 </div>
             </div>
-            <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); height: 400px;">
+            <div class="chart-container">
                 <canvas id="jobAnalyticsChart"></canvas>
             </div>
         </div>
@@ -54,7 +54,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
                     <button id="userFilterBtn" class="btn primary sm">Filter</button>
                 </div>
             </div>
-            <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); height: 400px;">
+            <div class="chart-container">
                 <canvas id="userAnalyticsChart"></canvas>
             </div>
         </div>
@@ -70,7 +70,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
                     <button id="revenueFilterBtn" class="btn primary sm">Filter</button>
                 </div>
             </div>
-            <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); height: 400px;">
+            <div class="chart-container">
                 <canvas id="revenueAnalyticsChart"></canvas>
             </div>
         </div>

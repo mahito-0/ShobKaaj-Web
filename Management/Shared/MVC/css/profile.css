@@ -133,3 +133,50 @@
     justify-content: flex-end;
     margin-top: var(--space-6);
 }
+
+.map-container {
+    height: 300px; 
+    border-radius: var(--radius); 
+    border: 1px solid var(--line); 
+    margin-bottom: var(--space-4);
+    width: 100%;
+}
+
+
+/* =========================
+   Mobile Responsive
+   ========================= */
+@media (max-width: 768px) {
+    .profile-container {
+        padding-top: 70px;
+        padding-left: var(--space-4);
+        padding-right: var(--space-4);
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-section {
+        padding: var(--space-5);
+    }
+
+    .form-actions {
+        justify-content: stretch;
+    }
+
+    .form-actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .map-container {
+        height: 250px;
+    }
+}
+
+@media (max-width: 480px) {
+    .profile-title {
+        font-size: var(--fs-xl);
+    }
+}

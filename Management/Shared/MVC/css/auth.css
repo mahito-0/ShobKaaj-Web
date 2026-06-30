@@ -232,3 +232,65 @@
 .auth-container.active .toggle-right {
     transform: translateX(200%);
 }
+
+/* =========================
+   Mobile — Stack vertically
+   ========================= */
+@media (max-width: 768px) {
+    .auth-wrapper {
+        padding: 80px 16px 40px;
+        align-items: flex-start;
+    }
+
+    .auth-container {
+        width: 100%;
+        min-height: auto;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Hide the animated overlay panel on mobile */
+    .toggle-container {
+        display: none;
+    }
+
+    /* Show both forms full-width, stacked */
+    .sign-in,
+    .sign-up {
+        position: relative;
+        width: 100%;
+        left: auto;
+        opacity: 1;
+        z-index: 1;
+        transform: none !important;
+        animation: none !important;
+        top: auto;
+        height: auto;
+    }
+
+    /* Only show the active form */
+    .sign-up {
+        display: none;
+    }
+
+    .auth-container.active .sign-up {
+        display: flex;
+    }
+
+    .auth-container.active .sign-in {
+        display: none;
+    }
+
+    .auth-container form {
+        padding: 24px 20px;
+        height: auto;
+    }
+
+    .input-group {
+        flex-direction: column;
+    }
+
+    .input-group input {
+        width: 100%;
+    }
+}

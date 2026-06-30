@@ -1,8 +1,15 @@
 <?php
 
 set_time_limit(0);
-header("Content-Type: application/json");
 
+// Disable output buffering for streaming
+while (ob_get_level() > 0) {
+    ob_end_flush();
+}
+
+header("Content-Type: text/event-stream");
+header("Cache-Control: no-cache");
+header("Connection: keep-alive");
 
 $input = json_decode(file_get_contents("php://input"), true);
 $userMessage = $input['message'] ?? '';
@@ -12,52 +19,24 @@ if (empty($userMessage)) {
     exit;
 }
 
-// Ollama Configuration
+// Ollama Configuration - Optimized for Speed
 $data = [
-    "model" => "llama3.2",
+    "model" => "qwen3:8b",
+    "keep_alive" => "1h", // Keeps model in memory to prevent slow "cold starts"
+    "options" => [
+        "num_ctx" => 2048  // Limits memory footprint for faster processing
+    ],
     "messages" => [
         [
             "role" => "system",
-            "content" => "You are the helpful AI assistant for **ShobKaaj**, Bangladesh's premier job marketplace. 
-            
-            **Platform Overview:**
-            - **Mission:** Connecting clients with skilled professionals for local services.
-            - **Key Services & Rates (Approx):** 
-                - **Tutoring:** Math, English, Skills (৳500-2000/hr)
-                - **Delivery:** Packages, Food, Documents (৳50-500/trip)
-                - **Repairs:** AC, Phone, Plumbing (৳200-3000/job)
-                - **Household:** Cleaning, Cooking, Gardening (৳800-2500/day)
-                - **Other:** Photography, Event Management, Data Entry, Design.
-            
-            **Role-Specific Guides:**
-            - **For Clients (Hiring):**
-                1. **Post a Job:** Set budget, deadline, and requirements.
-                2. **Review:** Check applicant profiles, skills, and ratings.
-                3. **Hire:** Chat with candidates and assign the task.
-            - **For Workers (Earning):**
-                1. **Create Profile:** Highlight skills and past experience.
-                2. **Browse:** Filter jobs by category and location.
-                3. **Apply:** Send proposals and track applications.
-            
-            **Account & Help:**
-            - **Sign Up:** Free for everyone. Join as a 'Worker' or 'Client'.
-            - **Login:** Use Email/Password or Social Login (Google, Facebook, LinkedIn).
-            - **Forgot Password?** Use the 'Forget Your Password?' link on the login page.
-            - **Support:** Email info@shobkaaj.com for persistent issues.
-
-            **Common User Questions (FAQs):**
-            - **Is it free?** Registration is free. Service fees apply only to completed jobs.
-            - **How do I pay?** bKash, Nagad, Bank Transfer, or Cash on Delivery (COD).
-            - **Is it safe?** Yes! Verified NID/Phone profiles and user ratings ensure safety.
-            
-            **Your Goal:** Help users navigate the platform, reset passwords, find work, or hire talent. Be polite, concise, and professional."
+            "content" => "You are the AI assistant for ShobKaaj, a BD job marketplace. Be extremely polite, concise, and professional. Guide users on hiring (post job -> review -> hire) or working (create profile -> browse -> apply). Payment is via bKash/Nagad/Bank/COD. Registration is free. Email info@shobkaaj.com for support. Keep your answers brief."
         ],
         [
             "role" => "user",
             "content" => $userMessage
         ]
     ],
-    "stream" => false
+    "stream" => true
 ];
 
 // Send to Ollama (Localhost Port 11434)
@@ -69,27 +48,39 @@ if ($ch === false) {
     exit;
 }
 
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+// We do NOT want return transfer, we want to write it out immediately
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, false); 
 curl_setopt($ch, CURLOPT_POST, true);
 curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
 curl_setopt($ch, CURLOPT_HTTPHEADER, ["Content-Type: application/json"]);
 
-$response = curl_exec($ch);
-$error = null;
+// Stream handler: Called every time a chunk of data is received from Ollama
+curl_setopt($ch, CURLOPT_WRITEFUNCTION, function($ch, $chunk) {
+    $lines = explode("\n", trim($chunk));
+    foreach ($lines as $line) {
+        if (!empty($line)) {
+            $decoded = json_decode($line, true);
+            if (isset($decoded['message']['content'])) {
+                $content = $decoded['message']['content'];
+                // Format for SSE
+                echo "data: " . json_encode(["reply" => $content]) . "\n\n";
+                flush(); // Force output to client immediately
+            }
+        }
+    }
+    return strlen($chunk); // Must return length of processed chunk
+});
 
-// Check for errors BEFORE closing
+// Execute the request (this will block until streaming completes)
+curl_exec($ch);
+
+// Handle any cURL level connection errors
 if (curl_errno($ch)) {
     $error = curl_error($ch);
+    echo "data: " . json_encode(["error" => "Connection Error: " . $error]) . "\n\n";
+    flush();
 }
 
-// Close the handle immediately to free resources
+// Close the handle
 curl_close($ch);
 
-// Return Response to Website
-if ($error) {
-    echo json_encode(["error" => "Connection Error: " . $error]);
-} else {
-    $decoded = json_decode($response, true);
-    $reply = $decoded['message']['content'] ?? "Error: Could not understand Ollama response. Raw: " . substr($response, 0, 100);
-    echo json_encode(["reply" => $reply]);
-}

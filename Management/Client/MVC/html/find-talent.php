@@ -39,7 +39,7 @@
             </div>
         </section>
 
-        <section id="talentMapContainer" style="display: none; height: 600px; border-radius: var(--radius); border: 1px solid rgba(255, 255, 255, 0.1); margin-top: 2rem;">
+        <section id="talentMapContainer" class="map-container" style="display: none;">
             <!-- Map will be rendered here -->
         </section>
     </main>

@@ -336,3 +336,27 @@
     margin-bottom: 1rem;
     color: var(--primary);
 }
+
+/* =========================
+   Mobile Responsive
+   ========================= */
+@media (max-width: 768px) {
+    .my-jobs-container {
+        padding: 80px 16px 20px;
+    }
+
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-4);
+    }
+
+    .page-header .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .page-title {
+        font-size: var(--fs-2xl);
+    }
+}

@@ -214,3 +214,44 @@
     background: rgba(107, 114, 128, 0.1);
     color: var(--text-muted);
 }
+
+/* =========================
+   Mobile Responsive
+   ========================= */
+@media (max-width: 900px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .dashboard-container {
+        padding-top: 70px;
+    }
+
+    .dashboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-4);
+    }
+
+    .dashboard-header h2 {
+        font-size: var(--fs-2xl);
+    }
+}
+
+@media (max-width: 480px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-subtitle {
+        font-size: var(--fs-base);
+    }
+
+    .job-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-3);
+    }
+}

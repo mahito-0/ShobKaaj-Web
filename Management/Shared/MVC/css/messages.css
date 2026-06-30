@@ -408,42 +408,70 @@
 
 
 @media (max-width: 768px) {
+    .messenger-container {
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Show conversation list full-width by default on mobile */
     .conversations-panel {
-        width: 72px;
-        min-width: 72px;
+        width: 100%;
+        min-width: 100%;
+        border-right: none;
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        transition: transform 0.3s ease;
+        z-index: 2;
     }
 
-    .panel-header h2,
-    .search-box,
-    .conv-info {
-        display: none;
+    /* Hide chat panel behind by default */
+    .chat-panel {
+        width: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+        z-index: 1;
     }
 
-    .panel-header {
-        justify-content: center;
+    /* When a conversation is selected — slide chat in, panel out */
+    .messenger-container.mobile-chat-open .conversations-panel {
+        transform: translateX(-100%);
     }
 
-    .header-icon:first-child {
-        display: none;
+    .messenger-container.mobile-chat-open .chat-panel {
+        transform: translateX(0);
+        z-index: 2;
     }
 
-    .conversation-item {
-        justify-content: center;
-        padding: 10px;
+    /* Show the Back button in chat header */
+    .mobile-back-btn {
+        display: flex !important;
     }
+
+
 
     .conv-avatar-wrapper .avatar {
-        width: 40px;
-        height: 40px;
+        width: 44px;
+        height: 44px;
     }
 }
 
 @media (max-width: 480px) {
-    .conversations-panel {
-        display: none;
+    .message-wrapper {
+        max-width: 85%;
     }
 
-    .chat-panel {
-        width: 100%;
+    .message-input-area {
+        padding: 8px 12px;
+        gap: 8px;
     }
-}
+
+    .chat-header {
+        padding: 8px 12px;
+    }
+}

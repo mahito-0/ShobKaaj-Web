@@ -43,14 +43,18 @@
 
                 <div id="chatInterface" class="chat-interface" style="display: none;">
                     <div class="chat-header">
+                        <button id="mobileBackBtn" class="mobile-back-btn btn ghost" style="display:none;" aria-label="Back to conversations">
+                            <i class="fas fa-arrow-left"></i>
+                        </button>
                         <div class="chat-partner-info">
-                            <img src="/Practice/ShoobKaj-WEBTECH-Project/Management/Shared/MVC/images/logo.png" id="chatPartnerAvatar" class="avatar">
+                            <img src="/project-simulator-ShobKaaj/Management/Shared/MVC/images/logo.png" id="chatPartnerAvatar" class="avatar">
                             <div class="partner-details">
                                 <h3 id="chatPartnerName">User Name</h3>
                                 <span class="status-text">Messenger</span>
                             </div>
                         </div>
                     </div>
+
 
                     <div id="messagesList" class="messages-list">
                     </div>

@@ -46,13 +46,41 @@ async function sendMessage() {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        const data = await response.json();
-
+        // Hide loader and create the bot message container once
         loader.style.display = 'none';
-        if (data.reply) {
-            appendMessage(data.reply, 'bot-msg');
-        } else {
-            appendMessage("⚠️ Error: " + (data.error || "Unknown error"), 'bot-msg');
+        const botMessageDiv = document.createElement('div');
+        botMessageDiv.className = `message bot-msg`;
+        messagesContainer.insertBefore(botMessageDiv, loader);
+
+        // Stream the response
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder('utf-8');
+
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+
+            const chunk = decoder.decode(value, { stream: true });
+            const lines = chunk.split('\n\n');
+            
+            for (let line of lines) {
+                if (line.startsWith('data: ')) {
+                    const dataStr = line.substring(6);
+                    if (!dataStr.trim()) continue;
+                    
+                    try {
+                        const dataObj = JSON.parse(dataStr);
+                        if (dataObj.reply) {
+                            botMessageDiv.innerText += dataObj.reply;
+                            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                        } else if (dataObj.error) {
+                            botMessageDiv.innerText += "\n⚠️ " + dataObj.error;
+                        }
+                    } catch (e) {
+                        console.warn("JSON Parse Error in stream:", e);
+                    }
+                }
+            }
         }
 
     } catch (error) {

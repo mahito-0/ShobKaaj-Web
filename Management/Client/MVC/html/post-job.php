@@ -168,7 +168,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <div class="form-group">
                         <label>Job Location</label>
                         <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">Drop a pin where the job is located.</p>
-                        <div id="job-location-map" style="height: 300px; border-radius: var(--radius); border: 1px solid rgba(255, 255, 255, 0.1); margin-bottom: 1rem;"></div>
+                        <div id="job-location-map" class="map-container"></div>
                         <input type="hidden" name="latitude" id="input-latitude" value="">
                         <input type="hidden" name="longitude" id="input-longitude" value="">
                     </div>

@@ -242,3 +242,43 @@ body {
     font-size: var(--fs-xs);
     font-weight: 500;
 }
+
+/* =========================
+   Mobile Responsive
+   ========================= */
+@media (max-width: 768px) {
+    .container {
+        padding: 80px var(--space-4) var(--space-8);
+    }
+
+    .profile-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .profile-info h1 {
+        font-size: var(--fs-2xl);
+    }
+
+    .profile-meta {
+        gap: var(--space-3);
+    }
+
+    .reviews-section {
+        padding: var(--space-6) var(--space-4);
+    }
+}
+
+@media (max-width: 480px) {
+    .profile-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-avatar {
+        width: 120px;
+        height: 120px;
+    }
+
+    .stat-value {
+        font-size: var(--fs-2xl);
+    }
+}

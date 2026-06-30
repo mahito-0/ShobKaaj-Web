@@ -20,6 +20,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (userId) {
         startChatWithUser(userId);
     }
+
+    // Mobile back button — slide back to conversation list
+    const mobileBackBtn = document.getElementById('mobileBackBtn');
+    if (mobileBackBtn) {
+        mobileBackBtn.addEventListener('click', () => {
+            const messengerContainer = document.querySelector('.messenger-container');
+            if (messengerContainer) messengerContainer.classList.remove('mobile-chat-open');
+        });
+    }
 });
 
 async function loadConversations() {
@@ -84,6 +93,12 @@ function selectConversation(userId) {
     // Toggle Panels
     document.getElementById('emptyState').style.display = 'none';
     document.getElementById('chatInterface').style.display = 'flex';
+
+    // Mobile: slide to chat panel
+    const messengerContainer = document.querySelector('.messenger-container');
+    if (messengerContainer && window.innerWidth <= 768) {
+        messengerContainer.classList.add('mobile-chat-open');
+    }
 
     // Update Sidebar Selection
     document.querySelectorAll('.conversation-item').forEach(el => {

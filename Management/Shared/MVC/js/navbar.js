@@ -186,9 +186,16 @@ function renderNavbar(user) {
     }
 
     navbarEl.innerHTML = `
+    <div class="nav-overlay" id="navOverlay"></div>
     <div class="navbar-container">
       <div class="brand"><a href="/project-simulator-ShobKaaj/Management/Shared/MVC/html/index.php"><span>ShobKaaj</span></a></div>
      
+      <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle navigation" aria-expanded="false">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+
       <div class="navbar-menu" id="navLinks">
         <div class="navbar-nav">
         ${navItems.map(item => {
@@ -214,6 +221,43 @@ function renderNavbar(user) {
 
     const logoutBtn = document.getElementById('logoutBtn');
     if (logoutBtn) logoutBtn.onclick = () => $auth.logout();
+
+    // --- Mobile hamburger toggle ---
+    const toggle = document.getElementById('mobileMenuToggle');
+    const menu = document.getElementById('navLinks');
+    const overlay = document.getElementById('navOverlay');
+
+    function openMenu() {
+        toggle && toggle.classList.add('active');
+        toggle && toggle.setAttribute('aria-expanded', 'true');
+        menu && menu.classList.add('open');
+        overlay && overlay.classList.add('active');
+        document.body.classList.add('menu-open');
+    }
+
+    function closeMenu() {
+        toggle && toggle.classList.remove('active');
+        toggle && toggle.setAttribute('aria-expanded', 'false');
+        menu && menu.classList.remove('open');
+        overlay && overlay.classList.remove('active');
+        document.body.classList.remove('menu-open');
+    }
+
+    if (toggle) {
+        toggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            menu && menu.classList.contains('open') ? closeMenu() : openMenu();
+        });
+    }
+
+    if (overlay) overlay.addEventListener('click', closeMenu);
+
+    // Close menu when a nav link is clicked
+    if (menu) {
+        menu.querySelectorAll('.nav-item').forEach(link => {
+            link.addEventListener('click', closeMenu);
+        });
+    }
 
     initNotifications(user);
 }

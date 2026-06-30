@@ -274,3 +274,57 @@
     display: grid;
     gap: var(--space-5);
 }
+
+.map-container {
+    height: 300px; 
+    border-radius: var(--radius); 
+    border: 1px solid var(--line); 
+    margin-bottom: var(--space-4);
+    width: 100%;
+}
+
+
+/* =========================
+   Mobile Responsive
+   ========================= */
+@media (max-width: 900px) {
+    .container.split-layout {
+        grid-template-columns: 1fr;
+        padding-top: 90px;
+    }
+
+    .layout-sidebar {
+        position: static;
+        order: 2; /* Tips box moves below form on mobile */
+    }
+
+    .layout-content {
+        order: 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .container.split-layout {
+        padding: 80px var(--space-4) var(--space-8);
+        gap: var(--space-4);
+    }
+
+    .form-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .form-actions .btn,
+    .form-actions .btn-submit {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .page-title {
+        font-size: var(--fs-2xl);
+    }
+    
+    .map-container {
+        height: 250px;
+    }
+}
